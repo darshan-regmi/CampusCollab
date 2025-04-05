@@ -1,0 +1,38 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('users').child(auth.uid).child('role').val() === 'admin'",
+        ".write": "$uid === auth.uid || root.child('users').child(auth.uid).child('role').val() === 'admin'"
+      }
+    },
+    "skills": {
+      ".read": true,
+      ".write": "auth != null && auth.email_verified === true"
+    },
+    "bookings": {
+      "$bookingId": {
+        ".read": "auth != null && (data.child('studentId').val() === auth.uid || data.child('tutorId').val() === auth.uid)",
+        ".write": "auth != null && auth.email_verified === true && (!data.exists() || data.child('studentId').val() === auth.uid || data.child('tutorId').val() === auth.uid)"
+      }
+    },
+    "reviews": {
+      ".read": true,
+      "$reviewId": {
+        ".write": "auth != null && auth.email_verified === true && (!data.exists() || data.child('userId').val() === auth.uid)"
+      }
+    },
+    "favorites": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "messages": {
+      "$conversationId": {
+        ".read": "auth != null && (data.child('participants').child(auth.uid).exists())",
+        ".write": "auth != null && auth.email_verified === true && (data.child('participants').child(auth.uid).exists())"
+      }
+    }
+  }
+}
